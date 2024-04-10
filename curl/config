@@ -1,0 +1,6 @@
+VERSION=8.7.1
+URL=https://curl.se/download/curl-${VERSION}.tar.gz
+TYPE=autoconf
+#CONFIGURE_ARGS="--with-openssl --without-openssl-quic"
+CONFIGURE_ARGS="--with-gnutls"
+DEPENDENCIES="gnutls"

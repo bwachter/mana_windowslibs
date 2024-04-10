@@ -14,10 +14,11 @@ BDIR=${BDIR:-`pwd`/build}
 SRCDIR=`pwd`
 mkdir -p $BDIR
 
-BUILD_LIBS=${BUILD_LIBS:-"SDL2 SDL2_image SDL2_mixer SDL2_ttf SDL2_net physfs"}
+# openssl also is an option for curl, but seems to be more problematic
+BUILD_LIBS=${BUILD_LIBS:-"SDL2 SDL2_image SDL2_mixer SDL2_ttf SDL2_net physfs curl"}
 
 autoconf_bi(){
-    ./configure --host=${CROSS} --prefix=${PREFIX} && make -j${NPROC} && make -j${NPROC} install
+    ./configure --host=${CROSS} --prefix=${PREFIX} ${CONFIGURE_ARGS} && make -j${NPROC} && make -j${NPROC} install
 }
 
 cmake_bi(){
@@ -25,16 +26,34 @@ cmake_bi(){
         mkdir -p build && cd build && cmake --toolchain ../toolchain.cmake -DCMAKE_INSTALL_PREFIX=${PREFIX} .. && make install
 }
 
-export SDL2_CONFIG=${PREFIX}/bin/sdl2-config
+openssl_bi(){
+    ./Configure mingw64 --cross-compile-prefix=${CROSS}- --prefix=${PREFIX} --libdir=lib enable-quic && make -j${NPROC} && make -j ${NPROC} install
+}
 
-for lib in $BUILD_LIBS; do
-    . ${lib}/config
+build_package(){
+    echo "Building $1..."
+    unset URL
+    unset TYPE
+    unset ARCHIVE_NAME
+    unset VERSION
+    unset CONFIGURE_ARGS
+    unset DEPENDENCIES
+
+    . $1/config
+
+    if [ -n "$DEPENDENCIES" ]; then
+        echo "$1 requires $DEPENDENCIES"
+        for dep in $DEPENDENCIES; do
+            (build_package $dep)
+        done
+    fi
+
     if [ -z "$URL" ] || [ -z "$TYPE" ] || [ -z "$VERSION" ]; then
         echo "Incomplete build information for ${lib}"
         exit 1
     fi
     if [ -z "$ARCHIVE_NAME" ]; then
-        ARCHIVE_NAME=${lib}
+        ARCHIVE_NAME=$1
     fi
     ARCHIVE_TYPE=${ARCHIVE_TYPE:-tar.gz}
     NAME=${ARCHIVE_NAME}-${VERSION}
@@ -47,11 +66,17 @@ for lib in $BUILD_LIBS; do
                 autoconf_bi
             elif [ "$TYPE" = "cmake" ]; then
                 cmake_bi
+            elif [ "$TYPE" = "openssl" ]; then
+                openssl_bi
             else
                 echo "Unsupported build type"
             fi )
-    unset URL
-    unset TYPE
-    unset ARCHIVE_NAME
-    unset VERSION
+
+}
+
+export SDL2_CONFIG=${PREFIX}/bin/sdl2-config
+export PKG_CONFIG_PATH=${PREFIX}/lib/pkgconfig
+
+for lib in $BUILD_LIBS; do
+    build_package ${lib}
 done

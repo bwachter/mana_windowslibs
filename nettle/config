@@ -1,0 +1,3 @@
+VERSION=3.6
+URL=https://ftp.gnu.org/gnu/nettle/nettle-${VERSION}.tar.gz
+TYPE=autoconf

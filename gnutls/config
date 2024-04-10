@@ -1,0 +1,6 @@
+VERSION=3.7.10
+URL=https://www.gnupg.org/ftp/gcrypt/gnutls/v3.7/gnutls-${VERSION}.tar.xz
+TYPE=autoconf
+ARCHIVE_TYPE=tar.xz
+CONFIGURE_ARGS="--disable-doc --with-included-libtasn1 --with-included-unistring --without-p11-kit"
+DEPENDENCIES="nettle"
