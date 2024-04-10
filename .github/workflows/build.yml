@@ -1,0 +1,30 @@
+name: build and publish
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+  workflow_dispatch:
+
+jobs:
+  build_linux:
+    name: Build on Linux
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout Code
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+      - name: install build dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get -y install cmake m4 build-essential libz-mingw-w64-dev gcc-mingw-w64 g++-mingw-w64 mingw-w64
+      - name: build
+        run: |
+          sudo mkdir -p /opt/mana_libpack
+          sudo chown `id -u` /opt/mana_libpack
+          dpkg -l|grep mingw
+          env
+          ./build.sh
+          tar -C /opt -czf mana_libpack.tar.gz mana_libpack

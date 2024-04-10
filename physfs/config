@@ -1,0 +1,4 @@
+VERSION=3.2.0
+URL=https://github.com/icculus/physfs/archive/refs/tags/release-${VERSION}.tar.gz
+TYPE=cmake
+ARCHIVE_NAME=physfs-release
