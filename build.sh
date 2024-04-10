@@ -15,7 +15,7 @@ SRCDIR=`pwd`
 mkdir -p $BDIR
 
 # openssl also is an option for curl, but seems to be more problematic
-BUILD_LIBS=${BUILD_LIBS:-"SDL2 SDL2_image SDL2_mixer SDL2_ttf SDL2_net physfs curl"}
+BUILD_LIBS=${BUILD_LIBS:-"SDL2 SDL2_mixer SDL2_ttf SDL2_net SDL2_image physfs curl libxml2 libpng"}
 
 autoconf_bi(){
     ./configure --host=${CROSS} --prefix=${PREFIX} ${CONFIGURE_ARGS} && make -j${NPROC} && make -j${NPROC} install
@@ -75,7 +75,7 @@ build_package(){
 }
 
 export SDL2_CONFIG=${PREFIX}/bin/sdl2-config
-export PKG_CONFIG_PATH=${PREFIX}/lib/pkgconfig
+export PKG_CONFIG_PATH=${PREFIX}/lib/pkgconfig:${PREFIX}/share/pkgconfig
 
 for lib in $BUILD_LIBS; do
     build_package ${lib}

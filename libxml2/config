@@ -1,0 +1,5 @@
+VERSION=2.12.6
+URL=https://download.gnome.org/sources/libxml2/2.12/libxml2-${VERSION}.tar.xz
+TYPE=autoconf
+ARCHIVE_TYPE=tar.xz
+CONFIGURE_ARGS="--without-python"

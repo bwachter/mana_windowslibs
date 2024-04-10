@@ -1,0 +1,4 @@
+VERSION=1.6.43
+URL=http://prdownloads.sourceforge.net/libpng/libpng-${VERSION}.tar.gz
+TYPE=cmake
+DEPENDENCIES=zlib
