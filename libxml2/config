@@ -1,5 +1,7 @@
 VERSION=2.12.6
 URL=https://download.gnome.org/sources/libxml2/2.12/libxml2-${VERSION}.tar.xz
-TYPE=autoconf
+TYPE=cmake
 ARCHIVE_TYPE=tar.xz
 CONFIGURE_ARGS="--without-python"
+DEPENDENCIES="zlib libiconv"
+CMAKE_ARGS="-DLIBXML2_WITH_PYTHON=OFF -DLIBXML2_WITH_LZMA=OFF"
