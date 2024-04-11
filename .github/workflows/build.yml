@@ -27,4 +27,3 @@ jobs:
           dpkg -l|grep mingw
           env
           ./build.sh
-          tar -C /opt -czf mana_libpack.tar.gz mana_libpack

@@ -83,3 +83,9 @@ export PKG_CONFIG_PATH=${PREFIX}/lib/pkgconfig:${PREFIX}/share/pkgconfig
 for lib in $BUILD_LIBS; do
     build_package ${lib}
 done
+
+PREFIX_DIR=`dirname $PREFIX`
+PREFIX_LIBPACK=`basename $PREFIX`
+# required for some legacy includes which don't properly use pkgconfig
+(cd ${PREFIX}/include && ln -s SDL2 SDL)
+tar -C ${PREFIX_DIR} -czf ${BDIR}/mana_libpack.tar.gz ${PREFIX_LIBPACK}
