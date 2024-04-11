@@ -1,0 +1,5 @@
+VERSION=0.22.5
+URL=https://ftp.gnu.org/pub/gnu/gettext/gettext-${VERSION}.tar.gz
+TYPE=autoconf
+DEPENDENCIES=libiconv
+PATCH="sed -i 's/@GNULIB_CLOSE@/1/' */*/unistd.in.h"

@@ -15,9 +15,12 @@ SRCDIR=`pwd`
 mkdir -p $BDIR
 
 # openssl also is an option for curl, but seems to be more problematic
-BUILD_LIBS=${BUILD_LIBS:-"SDL2 SDL2_mixer SDL2_ttf SDL2_net SDL2_image physfs curl libxml2 libpng"}
+BUILD_LIBS=${BUILD_LIBS:-"SDL2 SDL2_mixer SDL2_ttf SDL2_net SDL2_image physfs curl libxml2 libpng gettext"}
 
 autoconf_bi(){
+    if [ -n "$PATCH" ]; then
+        eval "$PATCH"
+    fi
     ./configure --host=${CROSS} --prefix=${PREFIX} ${CONFIGURE_ARGS} && make -j${NPROC} && make -j${NPROC} install && touch .done
 }
 
