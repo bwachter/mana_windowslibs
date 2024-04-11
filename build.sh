@@ -18,16 +18,16 @@ mkdir -p $BDIR
 BUILD_LIBS=${BUILD_LIBS:-"SDL2 SDL2_mixer SDL2_ttf SDL2_net SDL2_image physfs curl libxml2 libpng"}
 
 autoconf_bi(){
-    ./configure --host=${CROSS} --prefix=${PREFIX} ${CONFIGURE_ARGS} && make -j${NPROC} && make -j${NPROC} install
+    ./configure --host=${CROSS} --prefix=${PREFIX} ${CONFIGURE_ARGS} && make -j${NPROC} && make -j${NPROC} install && touch .done
 }
 
 cmake_bi(){
     sed -e "s,LIBPACK_PREFIX,${PREFIX},g" ${SRCDIR}/toolchain.cmake > toolchain.cmake && \
-        mkdir -p build && cd build && cmake --toolchain ../toolchain.cmake -DCMAKE_INSTALL_PREFIX=${PREFIX} .. && make install
+        mkdir -p build && cd build && cmake --toolchain ../toolchain.cmake -DCMAKE_INSTALL_PREFIX=${PREFIX} ${CMAKE_ARGS} .. && make install && touch ../.done
 }
 
 openssl_bi(){
-    ./Configure mingw64 --cross-compile-prefix=${CROSS}- --prefix=${PREFIX} --libdir=lib enable-quic && make -j${NPROC} && make -j ${NPROC} install
+    ./Configure mingw64 --cross-compile-prefix=${CROSS}- --prefix=${PREFIX} --libdir=lib enable-quic && make -j${NPROC} && make -j ${NPROC} install && touch .done
 }
 
 build_package(){
@@ -60,7 +60,7 @@ build_package(){
     if ! [ -f ${BDIR}/${NAME}.${ARCHIVE_TYPE} ]; then
         wget -O ${BDIR}/${NAME}.${ARCHIVE_TYPE} -nc ${URL}
     fi
-    tar xf ${BDIR}/${NAME}.${ARCHIVE_TYPE} -C ${BDIR} && (
+    tar xf ${BDIR}/${NAME}.${ARCHIVE_TYPE} -C ${BDIR} && test -f ${BDIR}/${NAME}/.done || (
         cd ${BDIR}/${NAME} &&
             if [ "$TYPE" = "autoconf" ]; then
                 autoconf_bi
